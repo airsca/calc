@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Energetyczny AIRSCA</title>
+    <style>
+        :root {
+            --color-primary: #1e40af;
+            --color-primary-light: #3b82f6;
+            --color-primary-lighter: #dbeafe;
+            --color-secondary: #0ea5e9;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-400: #9ca3af;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: var(--color-gray-700);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin: 0;
+            margin-left: 10px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            color: var(--color-primary);
+        }
+
+        h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--color-gray-700);
+        }
+
+        .space-y {
+            margin-bottom: 24px;
+        }
+
+        .device-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border: 1px solid var(--color-gray-200);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .device-item:hover {
+            background-color: var(--color-gray-50);
+        }
+
+        .device-item.selected {
+            background-color: var(--color-primary-lighter);
+            border-color: var(--color-primary-light);
+        }
+
+        .device-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .device-details {
+            margin-left: 8px;
+        }
+
+        .device-name {
+            font-weight: 500;
+        }
+
+        .device-description {
+            font-size: 0.75rem;
+            color: var(--color-gray-500);
+        }
+
+        .device-power {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+            margin-bottom: 4px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .results-section {
+            background-color: var(--color-primary-lighter);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--color-primary-light);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid var(--color-gray-200);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .result-box {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid var(--color-gray-200);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress {
+            height: 8px;
+            background-color: var(--color-gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--color-primary);
+        }
+
+        .text-small {
+            font-size: 0.875rem;
+            color: var(--color-gray-500);
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--color-gray-200);
+            margin: 8px 0;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .alert {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 0.875rem;
+        }
+
+        .alert-info {
+            background-color: var(--color-primary-lighter);
+            border: 1px solid var(--color-primary-light);
+        }
+
+        .alert-icon {
+            margin-right: 8px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            background-color: var(--color-gray-50);
+            border: 1px solid var(--color-gray-200);
+            border-radius: 8px;
+            color: var(--color-gray-500);
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            color: var(--color-gray-400);
+        }
+
+        /* Icons */
+        .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M4 15a8 8 0 1 0 16 0"></path>
+                    <path d="M8.5 16.5L7 21l4-1 4 1-1.5-4.5"></path>
+                    <path d="M11 9h2V2h-2z"></path>
+                </svg>
+                <h2>Kalkulator Energetyczny AIRSCA</h2>
+            </div>
+            <div class="card-body">
+                <div class="grid">
+                    <!-- Left column - device selection -->
+                    <div>
+                        <h3>Wybierz urządzenia</h3>
+
+                        <div class="space-y">
+                            <h4>Moduły obliczeniowe</h4>
+                            <div id="computing-modules">
+                                <!-- Items will be inserted by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="space-y">
+                            <h4>Moduły antenowe i SDR</h4>
+                            <div id="antenna-modules">
+                                <!-- Items will be inserted by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="space-y">
+                            <h4>Moduły komunikacyjne</h4>
+                            <div id="communication-modules">
+                                <!-- Items will be inserted by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="space-y">
+                            <h4>Moduły specjalistyczne</h4>
+                            <div id="specialist-modules">
+                                <!-- Items will be inserted by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="space-y">
+                            <h4>Parametry operacyjne</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="operation-time">Czas pracy (godziny)</label>
+                                    <input type="number" id="operation-time" class="form-control" value="24" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="safety-margin">Margines bezpieczeństwa (%)</label>
+                                    <input type="number" id="safety-margin" class="form-control" value="20" min="0" max="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right column - results -->
+                    <div id="results-column">
+                        <div class="results-section">
+                            <h3>Wyniki obliczeń</h3>
+
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <svg class="stat-icon" viewBox="0 0 24 24">
+                                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                    </svg>
+                                    <span class="stat-label">Łączna moc</span>
+                                    <span class="stat-value" id="total-power">0 W</span>
+                                </div>
+
+                                <div class="stat-card">
+                                    <svg class="stat-icon" viewBox="0 0 24 24">
+                                        <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                                        <path d="M17 7V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v3"></path>
+                                        <line x1="6" y1="12" x2="6" y2="12"></line>
+                                        <line x1="10" y1="12" x2="10" y2="12"></line>
+                                        <line x1="14" y1="12" x2="14" y2="12"></line>
+                                        <line x1="18" y1="12" x2="18" y2="12"></line>
+                                    </svg>
+                                    <span class="stat-label">Wymagana energia</span>
+                                    <span class="stat-value" id="total-energy">0 Wh</span>
+                                </div>
+                            </div>
+
+                            <div class="result-box">
+                                <h4>Wymagane jednostki Portigen</h4>
+                                <div id="portigen-units-content">
+                                    <div class="result-item">
+                                        <span>Podstawowe jednostki (500Wh):</span>
+                                        <span class="font-bold" id="required-units">0</span>
+                                    </div>
+
+                                    <div class="progress">
+                                        <div class="progress-bar" id="capacity-bar" style="width: 0%"></div>
+                                    </div>
+
+                                    <div class="text-small">
+                                        Wykorzystanie pojemności: <span id="capacity-percentage">0</span>%
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="result-box" id="optimal-config-container">
+                                <h4>Optymalna konfiguracja</h4>
+                                <div id="optimal-config">
+                                    <!-- Will be filled by JavaScript -->
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info" id="info-alert">
+                                <svg class="alert-icon icon" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <div>
+                                    <p>System będzie działał przez <strong id="time-value">24 godzin</strong> z marginesem bezpieczeństwa <strong id="margin-value">20%</strong>.</p>
+                                    <p style="margin-top: 4px;">Przy stałym obciążeniu <strong id="power-constant">0W</strong>, jedna podstawowa jednostka Portigen (500Wh) wystarczy na około <strong id="hours-per-unit">0</strong> godzin pracy.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="empty-state" id="empty-state">
+                            <svg class="empty-icon" viewBox="0 0 24 24">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                                <line x1="1" y1="23" x2="23" y2="1"></line>
+                            </svg>
+                            <p>Wybierz urządzenia z listy po lewej stronie, aby obliczyć zapotrzebowanie energetyczne.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Device data
+        const deviceCategories = [
+            {
+                id: "computing-modules",
+                name: "Moduły obliczeniowe",
+                devices: [
+                    { id: "edgebrain_pro", name: "EdgeBrain Pro", power: 35, description: "Moduł obliczeniowy z procesorem Intel N95" },
+                    { id: "edgebrain_cluster", name: "EdgeBrain Cluster", power: 120, description: "4 niezależne jednostki obliczeniowe" },
+                    { id: "cooling_system", name: "System chłodzenia", power: 15, description: "Aktywne chłodzenie dla modułów obliczeniowych" }
+                ]
+            },
+            {
+                id: "antenna-modules",
+                name: "Moduły antenowe i SDR",
+                devices: [
+                    { id: "omniscan_pro", name: "OmniScan Pro", power: 8, description: "Podstawowy moduł SDR z Airspy R2" },
+                    { id: "spectrumhunter", name: "SpectrumHunter", power: 18, description: "Zaawansowany moduł SDR (10kHz-6GHz)" },
+                    { id: "dronesense", name: "DroneSense", power: 12, description: "Moduł wykrywania dronów z Remote ID" },
+                    { id: "wifihound", name: "WifiHound", power: 10, description: "Moduł monitorowania WiFi" },
+                    { id: "bluescanner", name: "BlueScanner", power: 5, description: "Moduł monitorowania Bluetooth" }
+                ]
+            },
+            {
+                id: "communication-modules",
+                name: "Moduły komunikacyjne",
+                devices: [
+                    { id: "netbridge_pro", name: "NetBridge Pro", power: 15, description: "Moduł łączności sieciowej (Ethernet/WiFi/5G)" },
+                    { id: "meshconnect", name: "MeshConnect", power: 22, description: "Moduł sieci mesh z zasięgiem do 5km" },
+                    { id: "satcomm", name: "SatComm", power: 45, description: "Moduł łączności satelitarnej" }
+                ]
+            },
+            {
+                id: "specialist-modules",
+                name: "Moduły specjalistyczne",
+                devices: [
+                    { id: "celltracker", name: "CellTracker", power: 14, description: "Moduł monitorowania sieci komórkowych" },
+                    { id: "dronedefender", name: "DroneDefender", power: 35, description: "Moduł przeciwdronowy (edukacyjny)" },
+                    { id: "tacticalvision", name: "TacticalVision", power: 28, description: "Moduł wizyjny z kamerą termowizyjną" },
+                    { id: "weathermind", name: "WeatherMind", power: 8, description: "Moduł meteorologiczny" }
+                ]
+            }
+        ];
+
+        // Portigen models
+        const portigeModels = [
+            { name: "Portigen Base", capacity: 500, weight: 5.2 },
+            { name: "Portigen Plus", capacity: 1000, weight: 9.8 },
+            { name: "Portigen Pro", capacity: 2000, weight: 17.3 },
+            { name: "Portigen Max", capacity: 3000, weight: 24.5 }
+        ];
+
+        // Initialize selected devices object
+        let selectedDevices = {};
+        let totalPower = 0;
+        let totalEnergy = 0;
+        let requiredUnits = 0;
+
+        // DOM elements
+        const operationTimeInput = document.getElementById('operation-time');
+        const safetyMarginInput = document.getElementById('safety-margin');
+        const totalPowerEl = document.getElementById('total-power');
+        const totalEnergyEl = document.getElementById('total-energy');
+        const requiredUnitsEl = document.getElementById('required-units');
+        const capacityBarEl = document.getElementById('capacity-bar');
+        const capacityPercentageEl = document.getElementById('capacity-percentage');
+        const optimalConfigEl = document.getElementById('optimal-config');
+        const optimalConfigContainerEl = document.getElementById('optimal-config-container');
+        const emptyStateEl = document.getElementById('empty-state');
+        const resultsSection = document.querySelector('.results-section');
+        const infoAlertEl = document.getElementById('info-alert');
+        const timeValueEl = document.getElementById('time-value');
+        const marginValueEl = document.getElementById('margin-value');
+        const powerConstantEl = document.getElementById('power-constant');
+        const hoursPerUnitEl = document.getElementById('hours-per-unit');
+
+        // Render devices
+        function renderDevices() {
+            deviceCategories.forEach(category => {
+                const containerEl = document.getElementById(category.id);
+                containerEl.innerHTML = '';
+
+                category.devices.forEach(device => {
+                    const isSelected = selectedDevices[device.id] || false;
+                    const deviceEl = document.createElement('div');
+                    deviceEl.className = `device-item ${isSelected ? 'selected' : ''}`;
+                    deviceEl.innerHTML = `
+                        <div class="device-info">
+                            <input type="checkbox" ${isSelected ? 'checked' : ''}>
+                            <div class="device-details">
+                                <div class="device-name">${device.name}</div>
+                                <div class="device-description">${device.description}</div>
+                            </div>
+                        </div>
+                        <span class="device-power">${device.power}W</span>
+                    `;
+                    
+                    deviceEl.addEventListener('click', () => toggleDevice(device.id));
+                    containerEl.appendChild(deviceEl);
+                });
+            });
+        }
+
+        // Toggle device selection
+        function toggleDevice(deviceId) {
+            selectedDevices[deviceId] = !selectedDevices[deviceId];
+            renderDevices();
+            calculateTotalPower();
+            calculateEnergyRequirements();
+            updateUI();
+        }
+
+        // Calculate total power
+        function calculateTotalPower() {
+            let power = 0;
+            
+            deviceCategories.forEach(category => {
+                category.devices.forEach(device => {
+                    if (selectedDevices[device.id]) {
+                        power += device.power;
+                    }
+                });
+            });
+            
+            totalPower = power;
+        }
+
+        // Calculate energy requirements
+        function calculateEnergyRequirements() {
+            const operationTime = parseInt(operationTimeInput.value, 10) || 24;
+            const safetyMargin = parseInt(safetyMarginInput.value, 10) || 20;
+            
+            // Energy in Wh = Power in W * time in hours
+            const energyRequired = totalPower * operationTime;
+            
+            // Add safety margin
+            const energyWithMargin = energyRequired * (1 + safetyMargin / 100);
+            
+            totalEnergy = energyWithMargin;
+            
+            // Calculate required Portigen units (base model 500Wh)
+            requiredUnits = Math.ceil(energyWithMargin / 500);
+        }
+
+        // Calculate optimal Portigen configuration
+        function calculateOptimalConfiguration() {
+            if (totalEnergy <= 0) return [];
+            
+            // Sort models by capacity (largest first)
+            const sortedModels = [...portigeModels].sort((a, b) => b.capacity - a.capacity);
+            
+            let remainingEnergy = totalEnergy;
+            const configuration = [];
+            
+            // Try to use larger capacity models first (more efficient)
+            sortedModels.forEach(model => {
+                const unitsNeeded = Math.floor(remainingEnergy / model.capacity);
+                if (unitsNeeded > 0) {
+                    configuration.push({
+                        model: model.name,
+                        units: unitsNeeded,
+                        capacity: model.capacity * unitsNeeded,
+                        weight: model.weight * unitsNeeded
+                    });
+                    remainingEnergy -= model.capacity * unitsNeeded;
+                }
+            });
+            
+            // Handle remaining energy with smallest unit
+            if (remainingEnergy > 0) {
+                const smallestModel = sortedModels[sortedModels.length - 1];
+                configuration.push({
+                    model: smallestModel.name,
+                    units: 1,
+                    capacity: smallestModel.capacity,
+                    weight: smallestModel.weight
+                });
+            }
+            
+            return configuration;
+        }
+
+        // Update UI with calculation results
+        function updateUI() {
+            const operationTime = parseInt(operationTimeInput.value, 10) || 24;
+            const safetyMargin = parseInt(safetyMarginInput.value, 10) || 20;
+            
+            // Update power and energy displays
+            totalPowerEl.textContent = `${totalPower} W`;
+            totalEnergyEl.textContent = `${Math.round(totalEnergy)} Wh`;
+            
+            // Update required units
+            requiredUnitsEl.textContent = requiredUnits;
+            
+            // Update capacity bar
+            const capacityPercentage = Math.min(100, (totalEnergy / (requiredUnits * 500)) * 100);
+            capacityBarEl.style.width = `${capacityPercentage}%`;
+            capacityPercentageEl.textContent = Math.round(capacityPercentage);
+            
+            // Update optimal configuration
+            const optimalConfig = calculateOptimalConfiguration();
+            optimalConfigEl.innerHTML = '';
+            
+            if (optimalConfig.length > 0) {
+                optimalConfig.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'result-item';
+                    itemEl.innerHTML = `
+                        <span>${item.units} × ${item.model}</span>
+                        <span>${item.capacity} Wh</span>
+                    `;
+                    optimalConfigEl.appendChild(itemEl);
+                });
+                
+                // Add total weight
+                const totalWeight = optimalConfig.reduce((sum, item) => sum + item.weight, 0);
+                const weightDivider = document.createElement('div');
+                weightDivider.className = 'divider';
+                optimalConfigEl.appendChild(weightDivider);
+                
+                const weightEl = document.createElement('div');
+                weightEl.className = 'result-item font-bold';
+                weightEl.innerHTML = `
+                    <span>Łączna waga:</span>
+                    <span>${totalWeight.toFixed(1)} kg</span>
+                `;
+                optimalConfigEl.appendChild(weightEl);
+            }
+            
+            // Update info text
+            timeValueEl.textContent = `${operationTime} godzin`;
+            marginValueEl.textContent = `${safetyMargin}%`;
+            powerConstantEl.textContent = `${totalPower}W`;
+            hoursPerUnitEl.textContent = totalPower > 0 ? Math.round(500 / totalPower) : 0;
+            
+            // Show/hide sections based on whether devices are selected
+            if (totalPower > 0) {
+                emptyStateEl.style.display = 'none';
+                resultsSection.style.display = 'block';
+                optimalConfigContainerEl.style.display = 'block';
+                infoAlertEl.style.display = 'flex';
+            } else {
+                emptyStateEl.style.display = 'flex';
+                resultsSection.style.display = 'none';
+                optimalConfigContainerEl.style.display = 'none';
+                infoAlertEl.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        function init() {
+            renderDevices();
+            updateUI();
+            
+            // Add event listeners for inputs
+            operationTimeInput.addEventListener('input', () => {
+                if (parseInt(operationTimeInput.value, 10) > 0) {
+                    calculateEnergyRequirements();
+                    updateUI();
+                }
+            });
+            
+            safetyMarginInput.addEventListener('input', () => {
+                const value = parseInt(safetyMarginInput.value, 10);
+                if (!isNaN(value) && value >= 0 && value <= 100) {
+                    calculateEnergyRequirements();
+                    updateUI();
+                }
+            });
+        }
+
+        // Run initialization
+        init();
+    </script>
+</body>
+</html>
