@@ -17,6 +17,8 @@
     <animate attributeName="opacity" values="0.2;0.3;0.2" dur="6s" repeatCount="indefinite" />
   </circle>
 </svg>
+
+      
 # Kalkulator Energetyczny [AIRSCA](http://calc.airsca.com)
 
 Kalkulator Energetyczny AIRSCA to zaawansowane narzędzie do planowania energetycznego dla systemów monitorowania i analizy przestrzeni elektromagnetycznej. Umożliwia precyzyjne określenie zapotrzebowania energetycznego w oparciu o wybrane moduły i parametry operacyjne.
