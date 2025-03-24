@@ -1,5 +1,22 @@
-![image](https://github.com/user-attachments/assets/21a298ce-3a13-41e5-b68d-2e214960f475)
 
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Tło -->
+  <circle cx="50" cy="50" r="50" fill="#1e40af"/>
+  
+  <!-- Symbol energii -->
+  <path d="M50 10 L35 55 H50 L40 90 L65 45 H50 L60 10 Z" fill="#ffffff"/>
+  
+  <!-- Okręgi sygnału -->
+  <circle cx="50" cy="50" r="30" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5">
+    <animate attributeName="r" values="20;30;20" dur="5s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.3;0.5;0.3" dur="5s" repeatCount="indefinite" />
+  </circle>
+  
+  <circle cx="50" cy="50" r="40" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3">
+    <animate attributeName="r" values="35;45;35" dur="6s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.2;0.3;0.2" dur="6s" repeatCount="indefinite" />
+  </circle>
+</svg>
 # [Kalkulator Energetyczny AIRSCA](http://calc.airsca.com)
 
 Kalkulator Energetyczny AIRSCA to zaawansowane narzędzie do planowania energetycznego dla systemów monitorowania i analizy przestrzeni elektromagnetycznej. Umożliwia precyzyjne określenie zapotrzebowania energetycznego w oparciu o wybrane moduły i parametry operacyjne.
@@ -23,6 +40,8 @@ Kalkulator Energetyczny AIRSCA to zaawansowane narzędzie do planowania energety
 ```
 
 ## Funkcjonalności
+
+![image](https://github.com/user-attachments/assets/21a298ce-3a13-41e5-b68d-2e214960f475)
 
 Kalkulator oferuje trzy główne moduły dostępne poprzez system zakładek:
 
